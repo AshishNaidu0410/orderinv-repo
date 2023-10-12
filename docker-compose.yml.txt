@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_container870
+    environment:
+      MYSQL_DATABASE: AshDatabase
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3306:3306"
+    networks:
+      - ola_network
+
+  springboot:
+    build:
+      context: .  # Use the current directory as the build context
+    container_name: OI_service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - mysql
+    networks:
+      - ola_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://ash-sprint-rds.cmdlxfdnrfju.ap-south-1.rds.amazonaws.com:3306/AshDatabase
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: 12345678
+
+networks:
+  ola_network:
+    driver: bridge
